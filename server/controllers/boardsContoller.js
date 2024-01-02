@@ -25,15 +25,38 @@ export const createTableController = async (req, res) => {
             }]
         }]
     });
-
-    return createTable.save();
+    res.send(createTable.save());
+    
 };
 
 export const createCardController = async (req, res) => {
    
     const {sessionId, tableId, cardTitle} = req.params;
-
     const tableIdObject = new mongoose.Types.ObjectId(tableId);
+    const sessionIdObject = new mongoose.Types.ObjectId(sessionId);
+        /*userId: {type: String},
+    members:[{
+        memberListId:{type: String},
+        membername:{type: String},
+        memberProfile:{type: String},
+        memberMail:{type: String}
+    }],
+    boardTables:[{
+        table:[{
+           tableTitle:{type: String},
+           card:[{
+            cardTitle: {type: String},
+            frontPage: {type: String},
+            cardDate: {type: Date},
+            usersList: [{
+                userListId:{type: String},
+                username:{type: String},
+                userProfile:{type: String},
+                userMail:{type: String}
+            }]
+           }]
+        }]
+    }]*/
 
     const updateCards = await boardModel.updateOne(
         {userId: sessionId},
@@ -120,29 +143,7 @@ export const addDateToCardController = async (req, res) => {
 };
 
 export const addMemberInCardController = async (req, res) => {
-    /*userId: {type: String},
-    members:[{
-        memberListId:{type: String},
-        membername:{type: String},
-        memberProfile:{type: String},
-        memberMail:{type: String}
-    }],
-    boardTables:[{
-        table:[{
-           tableTitle:{type: String},
-           card:[{
-            cardTitle: {type: String},
-            frontPage: {type: String},
-            cardDate: {type: Date},
-            usersList: [{
-                userListId:{type: String},
-                username:{type: String},
-                userProfile:{type: String},
-                userMail:{type: String}
-            }]
-           }]
-        }]
-    }]*/
+
     const { sessionId, tableId, cardId, cardDate, userId, username, userProfile, userMail } = req.params;
 
     const tableIdObject = new mongoose.Types.ObjectId(tableId);
@@ -174,3 +175,10 @@ export const addMemberInCardController = async (req, res) => {
         return res.sendStatus(500);
     }
 };
+
+
+export const getAllTables = async (req, res) => {
+    const getAllTables = await boardModel.find({});
+
+    res.send(getAllTables);
+}
