@@ -9,21 +9,30 @@ const boardSchema = new mongoose.Schema({
         memberMail:{type: String}
     }],
     boardTables:[{
-        boardTableBackground: {type: String},
         boardTablesTitle: {type: String},
-        acces: {type: Number},
+        boardTableBackground: {type: String},
+        acces: {type: String},
+        boardLink: {type: String},
         table:[{
            tableTitle:{type: String},
            card:[{
-            cardTitle: {type: String},
-            frontPage: {type: String},
-            cardDate: {type: Date},
-            usersList: [{
-                username:{type: String},
-                userProfile:{type: String},
-                userMail:{type: String}
+                cardTitle: {type: String},
+                frontPage:{type: String},
+                cardDate: {type: Date},
+                cardDescription: {type: String},
+                usersList: [{
+                    username:{type: String},
+                    userProfile:{type: String},
+                    userMail:{type: String}
+                }],
+            /* cardAttachments:[{
+                    cardImg: {type: String}
+                }],*/
+                cardActivity:[{
+                    memberName:{type: String},
+                    memberComment:{type: String}
+                }]
             }]
-           }]
         }]
     }]
 });

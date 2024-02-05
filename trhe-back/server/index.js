@@ -2,10 +2,11 @@ import express from "express";
 import rateLimit from "express-rate-limit"; //ver si esta importado
 import morgan from 'morgan';
 import cors from 'cors';
+import fileUpload from 'express-fileupload';
 import { port } from './config.js';
 import { connectionDB } from './db.js';
 import userRoutes from '../server/routes/userRoutes.js';
-import boardRoutes from '../server/routes/boardsRoutes.js';
+import boardsRoutes from '../server/routes/boardsRoutes.js';
 
 const app = express();
 connectionDB();
@@ -23,6 +24,10 @@ const limiter = rateLimit({
 app.use(express.text());
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
+app.use(fileUpload({
+    useTempFiles:true,
+    tempFileDir: '/images'
+}))
 app.use(morgan('tiny'));
 app.use(limiter);
 app.use(cors({
@@ -39,7 +44,7 @@ app.use((req, res, next) => {
 
 //routes
 app.use(userRoutes);
-app.use(boardRoutes);
+app.use(boardsRoutes);
 
 //listen
 const server = app.listen(port, console.log("connected to port: ", port));

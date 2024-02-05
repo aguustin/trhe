@@ -3,7 +3,7 @@ import { addNewContactController, deleteContactController, getAll, userAuthentic
 
 const router = Router();
 
-router.post('/userRegistration', userRegistrationController);
+router.post('/signIn', userRegistrationController);
 
 router.post('/userAuthentication', userAuthenticationController);
 

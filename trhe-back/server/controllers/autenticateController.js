@@ -3,60 +3,62 @@ import userDataModel from "../models/userDataModel.js";
 import bcrypt from "bcrypt";
 
 export const userRegistrationController = async (req, res) => {
-    const {username, userPassword, confirmPassword, userMail} = req.body;
-
-    const findUser = await userDataModel.find({userMail: userMail});
+    const {email, username, password, confirmPassword} = req.body;
+    console.log(email, username, password, confirmPassword);
+    const findUser = await userDataModel.find({email: email});
 
     if(findUser.length > 0){
         res.send("el usuario ya existe");
     }else{
-        if(userPassword == confirmPassword){
-            const passwordEncrypted = await bcrypt.hash(userPassword, 12);
+        if(password == confirmPassword){
+            const passwordEncrypted = await bcrypt.hash(password, 12);
             if(passwordEncrypted){
+                console.log("asdasdasdasd");
                 const createUser = new userDataModel({
                     username: username,
                     userPassword: passwordEncrypted,
-                    userMail: userMail
+                    userMail: email
                 })
                 await createUser.save();
                 res.sendStatus(200);
             }else{
-                res.sendStatus(500);
+                res.sendStatus(203);
             }
 
         }else{
             console.log("las contraseñas son diferentes");
-            res.sendStatus(404);
+            res.sendStatus(203);
         }
     }
 
 };
 
 export const userAuthenticationController = async (req, res) => {
-    const {userMail, userPassword} = req.body;
-    const userExists = await userDataModel.find({userMail: userMail});
+    const {email, password} = req.body;
+    const userExists = await userDataModel.find({userMail: email});
+
+    console.log("users: ", userExists[0].userPassword);
 
     if(userExists.length > 0){
-        const match = await bcrypt.compare(userPassword, userExists[0].userPassword);
+        const match = await bcrypt.compare(password, userExists[0].userPassword);
 
-        if(match){
-            res.sendStatus(200);
+        if(match.length > 0){
+            res.send(userExists);
         }else{
-            res.sendStatus(400);
+            res.send(userExists);
         }
 
     }else{
-        res.sendStatus(404);
+        res.send(userExists);
     }
 };
 
 export const userUpdateInfoController = async (req, res) => {
-    const {sessionId, username, userPassword, confirmPassword, userProfile} = req.params;
+    const {sessionId, username, password, confirmPassword, userProfile} = req.params;
     console.log(sessionId);
 
-    if(userPassword == confirmPassword){
-
-        const passwordEncrypted = await bcrypt.hash(userPassword, 12);
+    if(password == confirmPassword){
+        const passwordEncrypted = await bcrypt.hash(password, 12);
 
         await userDataModel.updateOne(
             {_id: sessionId},
@@ -75,7 +77,7 @@ export const userUpdateInfoController = async (req, res) => {
 };
 
 export const addNewContactController = async (req, res) => {
-    const {sessionId, userId, username, userProfile, userMail} = req.body;
+    const {sessionId, userId, username, userProfile, email} = req.body;
     const sessionIdObject = new mongoose.Types.ObjectId(sessionId);
     
     await userDataModel.updateOne(
@@ -86,7 +88,7 @@ export const addNewContactController = async (req, res) => {
                     userId: userId,
                     username: username,
                     userProfile: userProfile,
-                    userMail: userMail
+                    email: email
                 }
             }
         }
